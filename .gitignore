@@ -1,0 +1,5 @@
+# macOS
+.DS_Store
+
+# iTerm2 auto-generated files (keep the main config)
+iterm2/*.bak
