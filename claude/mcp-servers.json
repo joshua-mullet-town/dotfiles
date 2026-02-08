@@ -1,0 +1,137 @@
+{
+  "global": {},
+  "projects": {
+    "/Users/joshuamullet/code/GiveGrove": {
+      "playwright": {
+        "type": "stdio",
+        "command": "npx",
+        "args": [
+          "@playwright/mcp@latest"
+        ],
+        "env": {}
+      },
+      "stripe": {
+        "type": "stdio",
+        "command": "npx",
+        "args": [
+          "-y",
+          "@stripe/mcp",
+          "--tools=all",
+          "--api-key=REDACTED"
+        ],
+        "env": {}
+      }
+    },
+    "/Users/joshuamullet/code": {
+      "playwright": {
+        "type": "stdio",
+        "command": "npx",
+        "args": [
+          "@playwright/mcp@latest"
+        ],
+        "env": {}
+      }
+    },
+    "/Users/joshuamullet/code/GiveGrove-joshua-mullet-town-feature-gh-1094": {
+      "playwright": {
+        "type": "stdio",
+        "command": "npx",
+        "args": [
+          "@playwright/mcp@latest"
+        ],
+        "env": {}
+      }
+    },
+    "/Users/joshuamullet/code/clawtree": {
+      "playwright": {
+        "type": "stdio",
+        "command": "npx",
+        "args": [
+          "@playwright/mcp@latest"
+        ],
+        "env": {}
+      }
+    },
+    "/Users/joshuamullet/code/holler": {
+      "playwright": {
+        "type": "stdio",
+        "command": "npx",
+        "args": [
+          "@playwright/mcp@latest"
+        ],
+        "env": {}
+      }
+    },
+    "/Users/joshuamullet/code/holler/holler-next": {
+      "jarvis-executor-v2": {
+        "type": "stdio",
+        "command": "/Users/joshuamullet/code/holler/holler-next/mcp-servers/jarvis-executor/venv/bin/python",
+        "args": [
+          "/Users/joshuamullet/code/holler/holler-next/mcp-servers/jarvis-executor/server_v2.py"
+        ],
+        "env": {}
+      }
+    },
+    "/Users/joshuamullet/code/lern": {
+      "playwright": {
+        "type": "stdio",
+        "command": "npx",
+        "args": [
+          "@playwright/mcp@latest"
+        ],
+        "env": {}
+      }
+    },
+    "/Users/joshuamullet/code/commander": {
+      "commander": {
+        "type": "stdio",
+        "command": "npx",
+        "args": [
+          "tsx",
+          "/Users/joshuamullet/code/commander/server/src/mcp/index.ts"
+        ]
+      }
+    },
+    "/Users/joshuamullet/code/whisper-village": {
+      "playwright": {
+        "type": "stdio",
+        "command": "npx",
+        "args": [
+          "@playwright/mcp@latest"
+        ],
+        "env": {}
+      },
+      "desktop-automation": {
+        "type": "stdio",
+        "command": "npx",
+        "args": [
+          "-y",
+          "mcp-desktop-automation"
+        ],
+        "env": {}
+      }
+    },
+    "/Users/joshuamullet/code/crowne-vault": {
+      "firebase": {
+        "type": "stdio",
+        "command": "npx",
+        "args": [
+          "-y",
+          "firebase-tools@latest",
+          "experimental:mcp"
+        ],
+        "env": {}
+      }
+    },
+    "/Users/joshuamullet/code/steward": {
+      "steward-memory": {
+        "type": "stdio",
+        "command": "node",
+        "args": [
+          "/Users/joshuamullet/code/steward/mcp-servers/memory-search/index.js"
+        ],
+        "env": {}
+      }
+    }
+  }
+}
