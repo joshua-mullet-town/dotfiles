@@ -3,12 +3,30 @@ const path = require("path");
 
 const configPath = process.env.HOME + "/.claude.json";
 const backupPath = path.join(__dirname, "mcp-servers.json");
+const secretsPath = path.join(__dirname, "mcp-secrets.json");
 
 // Read current config
 const config = JSON.parse(fs.readFileSync(configPath, "utf8"));
 
 // Read backup
-const backup = JSON.parse(fs.readFileSync(backupPath, "utf8"));
+let backup = JSON.parse(fs.readFileSync(backupPath, "utf8"));
+
+// Read secrets and substitute them into backup
+if (fs.existsSync(secretsPath)) {
+  const secrets = JSON.parse(fs.readFileSync(secretsPath, "utf8"));
+  let backupStr = JSON.stringify(backup);
+
+  for (const [key, value] of Object.entries(secrets)) {
+    // Replace ${VAR} with actual value
+    backupStr = backupStr.replace(new RegExp("\\$\\{" + key + "\\}", "g"), value);
+  }
+
+  backup = JSON.parse(backupStr);
+  console.log("Substituted secrets:", Object.keys(secrets).join(", "));
+} else {
+  console.log("WARNING: No mcp-secrets.json found - placeholders will remain!");
+  console.log("Create mcp-secrets.json with your API keys to restore fully.");
+}
 
 // Restore global MCP servers
 if (backup.global && Object.keys(backup.global).length > 0) {

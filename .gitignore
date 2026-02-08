@@ -3,3 +3,6 @@
 
 # iTerm2 auto-generated files (keep the main config)
 iterm2/*.bak
+
+# Claude MCP secrets (actual API keys)
+claude/mcp-secrets.json

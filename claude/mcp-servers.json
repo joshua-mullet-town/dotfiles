@@ -17,7 +17,7 @@
           "-y",
           "@stripe/mcp",
           "--tools=all",
-          "--api-key=REDACTED"
+          "--api-key=${STRIPE_TEST_API_KEY}"
         ],
         "env": {}
       }
