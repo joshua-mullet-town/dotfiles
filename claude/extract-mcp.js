@@ -1,10 +1,34 @@
 const fs = require("fs");
 const path = require("path");
+const os = require("os");
 
-const config = JSON.parse(fs.readFileSync(process.env.HOME + "/.claude.json", "utf8"));
+const HOME = os.homedir();
+const configPath = path.join(HOME, ".claude.json");
+const outputPath = path.join(__dirname, "mcp-servers.json");
+const secretsPath = path.join(__dirname, "mcp-secrets.json");
+const machineConfigPath = path.join(__dirname, "machine-config.json");
 
-// Patterns to extract secrets (API keys, tokens)
-// Note: Slack tokens are workspace-specific, so we use generic names
+// --- Load machine config ---
+let codeDir;
+if (fs.existsSync(machineConfigPath)) {
+  const machineConfig = JSON.parse(fs.readFileSync(machineConfigPath, "utf8"));
+  codeDir = machineConfig.codeDir;
+} else {
+  // Auto-detect: check common locations
+  const candidates = ["code", "repos", "projects", "src"].map(d => path.join(HOME, d));
+  codeDir = candidates.find(d => fs.existsSync(d));
+  if (!codeDir) {
+    console.error("ERROR: Could not detect code directory.");
+    console.error("Create claude/machine-config.json with: { \"codeDir\": \"/path/to/your/code\" }");
+    process.exit(1);
+  }
+  // Save it for future runs
+  fs.writeFileSync(machineConfigPath, JSON.stringify({ codeDir }, null, 2));
+  console.log(`Auto-detected code directory: ${codeDir}`);
+  console.log(`Saved to ${machineConfigPath}`);
+}
+
+// --- Patterns to extract secrets ---
 const SECRET_PATTERNS = [
   { pattern: /sk_test_[A-Za-z0-9]+/g, name: "STRIPE_TEST_API_KEY" },
   { pattern: /sk_live_[A-Za-z0-9]+/g, name: "STRIPE_LIVE_API_KEY" },
@@ -13,62 +37,98 @@ const SECRET_PATTERNS = [
   { pattern: /whsec_[A-Za-z0-9]+/g, name: "STRIPE_WEBHOOK_SECRET" },
   { pattern: /xoxc-[A-Za-z0-9-]+/g, name: "SLACK_XOXC_TOKEN" },
   { pattern: /xoxd-[A-Za-z0-9%+-]+/g, name: "SLACK_XOXD_TOKEN" },
+  { pattern: /ATATT3x[A-Za-z0-9_=+-]+/g, name: "JIRA_API_TOKEN" },
 ];
 
-function extractAndReplaceSecrets(obj) {
-  const secrets = {};
-  let str = JSON.stringify(obj);
+// Env keys whose values should always be treated as secrets
+const SECRET_ENV_KEYS = [
+  "JIRA_API_TOKEN", "JIRA_USERNAME",
+  "LANGFUSE_SECRET_KEY", "LANGFUSE_PUBLIC_KEY",
+  "TWILIO_AUTH_TOKEN", "TWILIO_ACCOUNT_SID",
+];
 
+function extractSecrets(str) {
+  const secrets = {};
   for (const { pattern, name } of SECRET_PATTERNS) {
     const matches = str.match(pattern);
     if (matches && matches.length > 0) {
-      // Store the first match (usually there's only one per type)
       secrets[name] = matches[0];
-      // Replace all occurrences with env var placeholder
       str = str.replace(pattern, "${" + name + "}");
     }
   }
-
-  return { sanitized: JSON.parse(str), secrets };
+  return { sanitized: str, secrets };
 }
 
-// Extract global MCP servers (user-level, at top of .claude.json)
+// --- Abstract machine-specific paths ---
+// Order matters: replace more specific (codeDir) before less specific (HOME)
+function abstractPaths(str) {
+  // Replace code directory with ${CODE_DIR}
+  str = str.split(codeDir).join("${CODE_DIR}");
+  // Replace home directory with ${HOME} (catches ~/.worktrees, ~/.local, etc.)
+  str = str.split(HOME).join("${HOME}");
+  return str;
+}
+
+// --- Read .claude.json ---
+const config = JSON.parse(fs.readFileSync(configPath, "utf8"));
+
+// Extract global MCP servers
 const globalMcp = config.mcpServers || {};
 
-// Also grab any project-specific ones we want to preserve
+// Extract project-specific MCP servers
 const allMcp = { global: globalMcp, projects: {} };
-
-// Find project-specific MCP servers
 for (const [projPath, proj] of Object.entries(config.projects || {})) {
   if (projPath !== "*" && proj.mcpServers && Object.keys(proj.mcpServers).length > 0) {
     allMcp.projects[projPath] = proj.mcpServers;
   }
 }
 
-// Extract secrets and replace with placeholders
-const { sanitized, secrets } = extractAndReplaceSecrets(allMcp);
+// --- Extract secrets from env values by key name ---
+function extractEnvSecrets(obj) {
+  const secrets = {};
+  function walk(node) {
+    if (!node || typeof node !== "object") return;
+    if (node.env && typeof node.env === "object") {
+      for (const [key, value] of Object.entries(node.env)) {
+        if (SECRET_ENV_KEYS.includes(key) && value && !value.startsWith("${")) {
+          secrets[key] = value;
+          node.env[key] = "${" + key + "}";
+        }
+      }
+    }
+    for (const val of Object.values(node)) {
+      walk(val);
+    }
+  }
+  walk(obj);
+  return secrets;
+}
 
-// Write the sanitized config (safe for git)
-const outputPath = path.join(__dirname, "mcp-servers.json");
-fs.writeFileSync(outputPath, JSON.stringify(sanitized, null, 2));
+// --- Process: extract env secrets, abstract paths, then extract pattern secrets ---
+const envSecrets = extractEnvSecrets(allMcp);
+let jsonStr = JSON.stringify(allMcp, null, 2);
+jsonStr = abstractPaths(jsonStr);
+const { sanitized, secrets: patternSecrets } = extractSecrets(jsonStr);
+const secrets = { ...envSecrets, ...patternSecrets };
 
-// Write secrets file (gitignored)
-const secretsPath = path.join(__dirname, "mcp-secrets.json");
+// --- Write portable config (safe for git) ---
+fs.writeFileSync(outputPath, sanitized);
+console.log(`\nExported MCP servers to: ${outputPath}`);
+console.log(`  Global servers: ${Object.keys(globalMcp).length}`);
+console.log(`  Project configs: ${Object.keys(allMcp.projects).length}`);
+
+// --- Write/merge secrets (gitignored) ---
 if (Object.keys(secrets).length > 0) {
-  // Merge with existing secrets file if it exists
   let existingSecrets = {};
   if (fs.existsSync(secretsPath)) {
     existingSecrets = JSON.parse(fs.readFileSync(secretsPath, "utf8"));
   }
   const mergedSecrets = { ...existingSecrets, ...secrets };
   fs.writeFileSync(secretsPath, JSON.stringify(mergedSecrets, null, 2));
-  console.log("Updated secrets file:", secretsPath);
-  console.log("Secrets found:", Object.keys(secrets).join(", "));
+  console.log(`  Secrets found: ${Object.keys(secrets).join(", ")}`);
 }
 
-console.log("Exported MCP servers to:", outputPath);
-console.log("Global servers:", Object.keys(globalMcp).length);
-console.log("Project-specific configs:", Object.keys(allMcp.projects).length);
-console.log("\nFiles:");
-console.log("  mcp-servers.json  - Safe for git (secrets replaced with ${VAR})");
-console.log("  mcp-secrets.json  - GITIGNORED (contains actual secrets)");
+console.log(`\nFiles:`);
+console.log(`  mcp-servers.json   - Portable config (paths use \${HOME} and \${CODE_DIR})`);
+console.log(`  mcp-secrets.json   - GITIGNORED (actual API keys)`);
+console.log(`  machine-config.json - GITIGNORED (this machine's code directory)`);

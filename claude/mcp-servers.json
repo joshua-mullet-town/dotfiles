@@ -1,231 +1,125 @@
 {
   "global": {
-    "voicemode": {
+    "playwright": {
       "type": "stdio",
-      "command": "uvx",
+      "command": "npx",
       "args": [
-        "voice-mode"
+        "@playwright/mcp@latest"
       ],
       "env": {}
     },
-    "firebase": {
+    "command-hub": {
       "type": "stdio",
+      "command": "${CODE_DIR}/hub/start-mcp-server.sh",
+      "args": [],
+      "env": {}
+    },
+    "word-display-poc": {
+      "type": "stdio",
+      "command": "${CODE_DIR}/chatgpt-app-poc/backend/start-mcp-server.sh",
+      "args": [],
+      "env": {}
+    },
+    "dynamodb": {
+      "type": "stdio",
+      "command": "${HOME}/Library/Python/3.13/bin/uvx",
+      "args": [
+        "awslabs.dynamodb-mcp-server@latest"
+      ],
+      "env": {
+        "AWS_REGION": "us-east-1"
+      }
+    },
+    "aws-unified": {
+      "type": "stdio",
+      "command": "${HOME}/Library/Python/3.13/bin/uvx",
+      "args": [
+        "awslabs.core-mcp-server@latest"
+      ],
+      "env": {
+        "AWS_REGION": "us-east-1"
+      }
+    },
+    "bronco-browser": {
       "command": "npx",
       "args": [
         "-y",
-        "firebase-tools@latest",
-        "experimental:mcp"
-      ],
-      "env": {}
-    },
-    "steward-memory": {
-      "type": "stdio",
-      "command": "node",
-      "args": [
-        "/Users/joshuamullet/code/homestead/mcp-servers/memory-search/index.js"
-      ],
-      "env": {}
-    },
-    "gmail": {
-      "type": "stdio",
-      "command": "npx",
-      "args": [
-        "@gongrzhe/server-gmail-autoauth-mcp"
+        "bronco-browser",
+        "serve"
       ]
     },
-    "phone": {
+    "jira-mcp-server": {
       "type": "stdio",
       "command": "uvx",
       "args": [
-        "phone-mcp"
-      ]
-    },
-    "slack-mullettown": {
-      "type": "stdio",
-      "command": "npx",
-      "args": [
-        "slack-mcp-server"
+        "--from",
+        "git+ssh://git@github-tr/Tire-Rack-Innovation/jira-mcp-server",
+        "jira-mcp-server"
       ],
       "env": {
-        "SLACK_MCP_XOXC_TOKEN": "${SLACK_XOXC_TOKEN}",
-        "SLACK_MCP_XOXD_TOKEN": "${SLACK_XOXD_TOKEN}",
-        "SLACK_MCP_USERS_CACHE": "/tmp/slack-mcp-mullettown-users.json",
-        "SLACK_MCP_CHANNELS_CACHE": "/tmp/slack-mcp-mullettown-channels.json"
+        "JIRA_URL": "https://asaptire.atlassian.net",
+        "JIRA_USERNAME": "${JIRA_USERNAME}",
+        "JIRA_API_TOKEN": "${JIRA_API_TOKEN}",
+        "JIRA_WRITE_ENABLED": "true",
+        "JIRA_ALLOWED_PROJECTS": "TRAC,FRON"
       }
     },
-    "slack-codeworks": {
-      "type": "stdio",
-      "command": "npx",
-      "args": [
-        "slack-mcp-server"
-      ],
-      "env": {
-        "SLACK_MCP_XOXC_TOKEN": "${SLACK_XOXC_TOKEN}",
-        "SLACK_MCP_XOXD_TOKEN": "${SLACK_XOXD_TOKEN}",
-        "SLACK_MCP_USERS_CACHE": "/tmp/slack-mcp-codeworks-users.json",
-        "SLACK_MCP_CHANNELS_CACHE": "/tmp/slack-mcp-codeworks-channels.json"
+    "langfuse-docs": {
+      "type": "http",
+      "url": "https://langfuse.com/api/mcp"
+    },
+    "langfuse-dev": {
+      "type": "http",
+      "url": "https://langfuse-dev.traci.mi.tirerack.com/api/public/mcp",
+      "headers": {
+        "Authorization": "Basic cGstbGYtMmMyMzEzZTktYzUzMC00MmIwLWIyODUtMzkzNGIzMTExM2JlOnNrLWxmLTM4NTUwNDA5LTJiMzctNDE5Yy1hYjE4LWFjYmFiOTUxNDA2OQ=="
       }
     },
-    "slack-tirerack": {
-      "type": "stdio",
-      "command": "npx",
-      "args": [
-        "slack-mcp-server"
-      ],
-      "env": {
-        "SLACK_MCP_XOXC_TOKEN": "${SLACK_XOXC_TOKEN}",
-        "SLACK_MCP_XOXD_TOKEN": "${SLACK_XOXD_TOKEN}",
-        "SLACK_MCP_USERS_CACHE": "/tmp/slack-mcp-tirerack-users.json",
-        "SLACK_MCP_CHANNELS_CACHE": "/tmp/slack-mcp-tirerack-channels.json"
+    "langfuse-prod": {
+      "type": "http",
+      "url": "https://langfuse.traci.mi.tirerack.com/api/public/mcp",
+      "headers": {
+        "Authorization": "Basic cGstbGYtNmZhZmQ4MjUtZjIyYS00ZDMyLWJiNDQtM2Q1MWJkMWUzOTZhOnNrLWxmLWVjZmEyM2UzLWQ0N2MtNGU5Yi1iMDQ5LTkyYmU0Yzg3OGExZA=="
       }
     },
-    "chrome-devtools": {
+    "confluence": {
       "type": "stdio",
-      "command": "npx",
-      "args": [
-        "-y",
-        "chrome-devtools-mcp@latest",
-        "--browserUrl=http://127.0.0.1:9222"
-      ],
+      "command": "${CODE_DIR}/confluence-mcp-server/start-mcp-server.sh",
+      "args": [],
       "env": {}
     },
-    "sms": {
+    "datadog": {
       "type": "stdio",
-      "command": "node",
+      "command": "${HOME}/.local/bin/datadog_mcp_cli",
       "args": [
-        "/Users/joshuamullet/code/mcp/sms-server/index.js"
-      ]
+        "--site",
+        "us5"
+      ],
+      "env": {
+        "DD_API_KEY": "746d4740b41186f09ee6163792ef1e86",
+        "DD_APP_KEY": "823ea23660f187b1c02a866a97c74bd29f7ee082"
+      }
     }
   },
   "projects": {
-    "/Users/joshuamullet/code/GiveGrove": {
-      "playwright": {
-        "type": "stdio",
-        "command": "npx",
+    "${HOME}": {
+      "aws-api": {
+        "command": "uvx",
         "args": [
-          "@playwright/mcp@latest"
+          "awslabs.aws-api-mcp-server@latest"
         ],
-        "env": {}
-      },
-      "stripe": {
-        "type": "stdio",
-        "command": "npx",
-        "args": [
-          "-y",
-          "@stripe/mcp",
-          "--tools=all",
-          "--api-key=${STRIPE_TEST_API_KEY}"
-        ],
-        "env": {}
+        "env": {
+          "AWS_REGION": "us-east-1",
+          "READ_OPERATIONS_ONLY": "true"
+        }
       }
     },
-    "/Users/joshuamullet/code": {
-      "playwright": {
+    "${CODE_DIR}/traci": {
+      "aws-docs": {
         "type": "stdio",
-        "command": "npx",
+        "command": "uvx",
         "args": [
-          "@playwright/mcp@latest"
-        ],
-        "env": {}
-      }
-    },
-    "/Users/joshuamullet/code/GiveGrove-joshua-mullet-town-feature-gh-1094": {
-      "playwright": {
-        "type": "stdio",
-        "command": "npx",
-        "args": [
-          "@playwright/mcp@latest"
-        ],
-        "env": {}
-      }
-    },
-    "/Users/joshuamullet/code/clawtree": {
-      "playwright": {
-        "type": "stdio",
-        "command": "npx",
-        "args": [
-          "@playwright/mcp@latest"
-        ],
-        "env": {}
-      }
-    },
-    "/Users/joshuamullet/code/holler": {
-      "playwright": {
-        "type": "stdio",
-        "command": "npx",
-        "args": [
-          "@playwright/mcp@latest"
-        ],
-        "env": {}
-      }
-    },
-    "/Users/joshuamullet/code/holler/holler-next": {
-      "jarvis-executor-v2": {
-        "type": "stdio",
-        "command": "/Users/joshuamullet/code/holler/holler-next/mcp-servers/jarvis-executor/venv/bin/python",
-        "args": [
-          "/Users/joshuamullet/code/holler/holler-next/mcp-servers/jarvis-executor/server_v2.py"
-        ],
-        "env": {}
-      }
-    },
-    "/Users/joshuamullet/code/lern": {
-      "playwright": {
-        "type": "stdio",
-        "command": "npx",
-        "args": [
-          "@playwright/mcp@latest"
-        ],
-        "env": {}
-      }
-    },
-    "/Users/joshuamullet/code/commander": {
-      "commander": {
-        "type": "stdio",
-        "command": "npx",
-        "args": [
-          "tsx",
-          "/Users/joshuamullet/code/commander/server/src/mcp/index.ts"
-        ]
-      }
-    },
-    "/Users/joshuamullet/code/whisper-village": {
-      "playwright": {
-        "type": "stdio",
-        "command": "npx",
-        "args": [
-          "@playwright/mcp@latest"
-        ],
-        "env": {}
-      },
-      "desktop-automation": {
-        "type": "stdio",
-        "command": "npx",
-        "args": [
-          "-y",
-          "mcp-desktop-automation"
-        ],
-        "env": {}
-      }
-    },
-    "/Users/joshuamullet/code/crowne-vault": {
-      "firebase": {
-        "type": "stdio",
-        "command": "npx",
-        "args": [
-          "-y",
-          "firebase-tools@latest",
-          "experimental:mcp"
-        ],
-        "env": {}
-      }
-    },
-    "/Users/joshuamullet/code/steward": {
-      "steward-memory": {
-        "type": "stdio",
-        "command": "node",
-        "args": [
-          "/Users/joshuamullet/code/homestead/mcp-servers/memory-search/index.js"
+          "awslabs.aws-documentation-mcp-server@latest"
         ],
         "env": {}
       }

@@ -6,3 +6,6 @@ iterm2/*.bak
 
 # Claude MCP secrets (actual API keys)
 claude/mcp-secrets.json
+
+# Machine-specific config (code directory path)
+claude/machine-config.json
