@@ -4,12 +4,15 @@ const path = require("path");
 const config = JSON.parse(fs.readFileSync(process.env.HOME + "/.claude.json", "utf8"));
 
 // Patterns to extract secrets (API keys, tokens)
+// Note: Slack tokens are workspace-specific, so we use generic names
 const SECRET_PATTERNS = [
   { pattern: /sk_test_[A-Za-z0-9]+/g, name: "STRIPE_TEST_API_KEY" },
   { pattern: /sk_live_[A-Za-z0-9]+/g, name: "STRIPE_LIVE_API_KEY" },
   { pattern: /rk_test_[A-Za-z0-9]+/g, name: "STRIPE_TEST_RESTRICTED_KEY" },
   { pattern: /rk_live_[A-Za-z0-9]+/g, name: "STRIPE_LIVE_RESTRICTED_KEY" },
   { pattern: /whsec_[A-Za-z0-9]+/g, name: "STRIPE_WEBHOOK_SECRET" },
+  { pattern: /xoxc-[A-Za-z0-9-]+/g, name: "SLACK_XOXC_TOKEN" },
+  { pattern: /xoxd-[A-Za-z0-9%+-]+/g, name: "SLACK_XOXD_TOKEN" },
 ];
 
 function extractAndReplaceSecrets(obj) {
@@ -29,8 +32,8 @@ function extractAndReplaceSecrets(obj) {
   return { sanitized: JSON.parse(str), secrets };
 }
 
-// Extract global MCP servers (user-level, not project-specific)
-const globalMcp = config.projects?.["*"]?.mcpServers || {};
+// Extract global MCP servers (user-level, at top of .claude.json)
+const globalMcp = config.mcpServers || {};
 
 // Also grab any project-specific ones we want to preserve
 const allMcp = { global: globalMcp, projects: {} };

@@ -1,5 +1,102 @@
 {
-  "global": {},
+  "global": {
+    "voicemode": {
+      "type": "stdio",
+      "command": "uvx",
+      "args": [
+        "voice-mode"
+      ],
+      "env": {}
+    },
+    "firebase": {
+      "type": "stdio",
+      "command": "npx",
+      "args": [
+        "-y",
+        "firebase-tools@latest",
+        "experimental:mcp"
+      ],
+      "env": {}
+    },
+    "steward-memory": {
+      "type": "stdio",
+      "command": "node",
+      "args": [
+        "/Users/joshuamullet/code/homestead/mcp-servers/memory-search/index.js"
+      ],
+      "env": {}
+    },
+    "gmail": {
+      "type": "stdio",
+      "command": "npx",
+      "args": [
+        "@gongrzhe/server-gmail-autoauth-mcp"
+      ]
+    },
+    "phone": {
+      "type": "stdio",
+      "command": "uvx",
+      "args": [
+        "phone-mcp"
+      ]
+    },
+    "slack-mullettown": {
+      "type": "stdio",
+      "command": "npx",
+      "args": [
+        "slack-mcp-server"
+      ],
+      "env": {
+        "SLACK_MCP_XOXC_TOKEN": "${SLACK_XOXC_TOKEN}",
+        "SLACK_MCP_XOXD_TOKEN": "${SLACK_XOXD_TOKEN}",
+        "SLACK_MCP_USERS_CACHE": "/tmp/slack-mcp-mullettown-users.json",
+        "SLACK_MCP_CHANNELS_CACHE": "/tmp/slack-mcp-mullettown-channels.json"
+      }
+    },
+    "slack-codeworks": {
+      "type": "stdio",
+      "command": "npx",
+      "args": [
+        "slack-mcp-server"
+      ],
+      "env": {
+        "SLACK_MCP_XOXC_TOKEN": "${SLACK_XOXC_TOKEN}",
+        "SLACK_MCP_XOXD_TOKEN": "${SLACK_XOXD_TOKEN}",
+        "SLACK_MCP_USERS_CACHE": "/tmp/slack-mcp-codeworks-users.json",
+        "SLACK_MCP_CHANNELS_CACHE": "/tmp/slack-mcp-codeworks-channels.json"
+      }
+    },
+    "slack-tirerack": {
+      "type": "stdio",
+      "command": "npx",
+      "args": [
+        "slack-mcp-server"
+      ],
+      "env": {
+        "SLACK_MCP_XOXC_TOKEN": "${SLACK_XOXC_TOKEN}",
+        "SLACK_MCP_XOXD_TOKEN": "${SLACK_XOXD_TOKEN}",
+        "SLACK_MCP_USERS_CACHE": "/tmp/slack-mcp-tirerack-users.json",
+        "SLACK_MCP_CHANNELS_CACHE": "/tmp/slack-mcp-tirerack-channels.json"
+      }
+    },
+    "chrome-devtools": {
+      "type": "stdio",
+      "command": "npx",
+      "args": [
+        "-y",
+        "chrome-devtools-mcp@latest",
+        "--browserUrl=http://127.0.0.1:9222"
+      ],
+      "env": {}
+    },
+    "sms": {
+      "type": "stdio",
+      "command": "node",
+      "args": [
+        "/Users/joshuamullet/code/mcp/sms-server/index.js"
+      ]
+    }
+  },
   "projects": {
     "/Users/joshuamullet/code/GiveGrove": {
       "playwright": {
@@ -128,7 +225,7 @@
         "type": "stdio",
         "command": "node",
         "args": [
-          "/Users/joshuamullet/code/steward/mcp-servers/memory-search/index.js"
+          "/Users/joshuamullet/code/homestead/mcp-servers/memory-search/index.js"
         ],
         "env": {}
       }
