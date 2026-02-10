@@ -1,0 +1,14 @@
+[debug] [2026-02-08T19:12:20.943Z] > command requires scopes: ["email","openid","https://www.googleapis.com/auth/cloudplatformprojects.readonly","https://www.googleapis.com/auth/firebase","https://www.googleapis.com/auth/cloud-platform"]
+[debug] [2026-02-08T19:12:20.944Z] > authorizing via signed-in user (joshua@mullet.town)
+[debug] [2026-02-08T19:12:20.944Z] > command requires scopes: ["email","openid","https://www.googleapis.com/auth/cloudplatformprojects.readonly","https://www.googleapis.com/auth/firebase","https://www.googleapis.com/auth/cloud-platform"]
+[debug] [2026-02-08T19:12:20.944Z] > authorizing via signed-in user (joshua@mullet.town)
+[debug] [2026-02-08T19:12:20.952Z] > command requires scopes: ["email","openid","https://www.googleapis.com/auth/cloudplatformprojects.readonly","https://www.googleapis.com/auth/firebase","https://www.googleapis.com/auth/cloud-platform"]
+[debug] [2026-02-08T19:12:20.952Z] > authorizing via signed-in user (joshua@mullet.town)
+[debug] [2026-02-08T19:12:21.079Z] > command requires scopes: ["email","openid","https://www.googleapis.com/auth/cloudplatformprojects.readonly","https://www.googleapis.com/auth/firebase","https://www.googleapis.com/auth/cloud-platform"]
+[debug] [2026-02-08T19:12:21.080Z] > authorizing via signed-in user (joshua@mullet.town)
+[debug] [2026-02-08T19:12:21.080Z] > command requires scopes: ["email","openid","https://www.googleapis.com/auth/cloudplatformprojects.readonly","https://www.googleapis.com/auth/firebase","https://www.googleapis.com/auth/cloud-platform"]
+[debug] [2026-02-08T19:12:21.080Z] > authorizing via signed-in user (joshua@mullet.town)
+[debug] [2026-02-08T19:12:21.100Z] > command requires scopes: ["email","openid","https://www.googleapis.com/auth/cloudplatformprojects.readonly","https://www.googleapis.com/auth/firebase","https://www.googleapis.com/auth/cloud-platform"]
+[debug] [2026-02-08T19:12:21.100Z] > authorizing via signed-in user (joshua@mullet.town)
+[debug] [2026-02-08T19:12:21.100Z] > command requires scopes: ["email","openid","https://www.googleapis.com/auth/cloudplatformprojects.readonly","https://www.googleapis.com/auth/firebase","https://www.googleapis.com/auth/cloud-platform"]
+[debug] [2026-02-08T19:12:21.100Z] > authorizing via signed-in user (joshua@mullet.town)

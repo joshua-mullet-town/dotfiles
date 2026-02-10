@@ -1,0 +1,6 @@
+```json
+{
+  "user_summary": "Check if homestead app running, where to access it",
+  "agent_summary": "Agent repeated irrelevant 2FA response instead of answering"
+}
+```
