@@ -1,0 +1,71 @@
+#!/usr/bin/env python3
+"""
+🎯 Holler Stop Hook
+Updates session status to 'ready' when Claude finishes responding
+Called by Claude Code's Stop hook system
+"""
+
+import json
+import sys
+import requests
+import os
+
+def main():
+    try:
+        # Read JSON input from stdin
+        input_data = json.load(sys.stdin)
+        
+        # For Stop hooks, Claude session ID should be available
+        session_id = (
+            input_data.get('session_id') or 
+            input_data.get('sessionId') or
+            os.environ.get('CLAUDE_SESSION_ID') or
+            ''
+        )
+        
+        if not session_id:
+            print(json.dumps({
+                "decision": "allow",
+                "reason": "No session ID available for Stop"
+            }))
+            return
+        
+        # Send status update to Holler backend
+        try:
+            payload = {
+                'claudeSessionId': session_id,
+                'status': 'ready',
+                'hookType': 'Stop',
+                'timestamp': input_data.get('timestamp', '')
+            }
+            
+            response = requests.post(
+                'http://localhost:3002/api/session-status-update',
+                json=payload,
+                timeout=5
+            )
+            
+            if response.status_code == 200:
+                print(f"✅ Session ready: {session_id}", file=sys.stderr)
+            else:
+                print(f"⚠️ Status update failed: {response.status_code}", file=sys.stderr)
+                
+        except requests.exceptions.RequestException as e:
+            print(f"⚠️ Status update request failed: {e}", file=sys.stderr)
+        
+        # Always allow the operation
+        print(json.dumps({
+            "decision": "allow",
+            "reason": "Session status updated to ready"
+        }))
+        
+    except Exception as e:
+        # If anything goes wrong, allow the operation and log the error
+        print(f"Stop hook error: {e}", file=sys.stderr)
+        print(json.dumps({
+            "decision": "allow",
+            "reason": f"Hook failed: {e}"
+        }))
+
+if __name__ == "__main__":
+    main()

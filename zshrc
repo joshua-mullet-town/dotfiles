@@ -64,8 +64,11 @@ holler() {
         SESSION_NAME="holler-$(basename "$WORKING_DIR")"
     fi
 
-    # Base Claude command with all discovered directories (use full path to avoid broken alias)
-    local CLAUDE_CMD="/Users/joshuamullet/.nvm/versions/node/v20.19.3/bin/claude --dangerously-skip-permissions$ADD_DIR_FLAGS"
+    # Base Claude command with all discovered directories
+    # IMPORTANT: Don't use $(which claude) here - it gets evaluated NOW and hardcodes the path.
+    # Instead, use 'claude' directly so it resolves at runtime when tmux runs the command.
+    # The shell profile in tmux will set up nvm/PATH correctly.
+    local CLAUDE_CMD="claude --dangerously-skip-permissions$ADD_DIR_FLAGS"
 
     # Add remaining arguments (flags like --resume, --continue, etc.)
     local claude_args=""
